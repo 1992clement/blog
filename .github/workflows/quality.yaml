@@ -40,3 +40,6 @@ jobs:
 
       - name: Run ECS
         run: composer ecs
+
+      - name: Run PHPStan
+        run: composer analyse
