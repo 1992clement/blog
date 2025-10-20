@@ -64,6 +64,9 @@
         ],
         "ecs": [
             "php vendor/bin/ecs --fix"
+        ],
+        "analyse": [
+            "php vendor/bin/phpstan analyse"
         ]
     },
     "conflict": {
