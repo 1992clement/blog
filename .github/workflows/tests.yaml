@@ -1,0 +1,39 @@
+name: tests
+on: push
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: PHP Setup
+        uses: shivammathur/setup-php@v2
+
+      - name: Setup composer cache
+        run: echo "COMPOSER_DIR_CACHE=$(composer config dir-cache)"
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ COMPOSER_DIR_CACHE }}
+          key: php-8.4composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php8.4-composer-latest-
+
+      - name: Composer self-update
+        run: composer self-update
+
+      - name: Install dependencies
+        run: | 
+          composer install \
+           --optimize-autoloader \
+           --no-progress \
+           --prefer-dist \
+           --no-interaction
+
+      - name: Run tests
+        run: php bin/phpunit tests
