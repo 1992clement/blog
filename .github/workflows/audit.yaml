@@ -1,0 +1,55 @@
+name: Composer dependencies audit
+on: [push, pull_request]
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: PHP Setup
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          tools: composer:v2
+
+      - name: Setup composer cache path
+        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.COMPOSER_CACHE_DIR }}
+          key: php-8.4composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php8.4-composer-latest-
+
+      - name: Update composer
+        run: composer self-update
+
+      - name: Install dependencies
+        run: composer install --no-interaction --optimize-autoloader --prefer-dist --no-progress
+
+      - name: Audit
+        run: |
+          composer audit \
+            --no-dev \
+            --format="json" \
+            --abandoned="report" \
+            --ignore-severity="low" \
+            --ignore-severity="medium" \
+            --no-ansi \
+            > /tmp/security-audit.json
+
+      - name: Upoad audit report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-audit
+          path: /tmp/security-audit.json
+
+
+
