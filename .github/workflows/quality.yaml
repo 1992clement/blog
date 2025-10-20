@@ -1,0 +1,42 @@
+name: Code quality audit & fix
+on: [push, pull_request]
+jobs:
+  quality:
+    defaults:
+      run:
+        working-directory: ./app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: PHP setup
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          tools: composer:v2
+
+      - name : Setup composer cache dir
+        run : echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.COMPOSER_CACHE_DIR }}
+          key: php-8.4composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php8.4-composer-latest-
+
+      - name: Composer self-update
+        run: composer self-update
+
+      - name: Install composer dependencies
+        run: |
+          composer install \
+           --optimize-autoloader \
+           --no-progress \
+           --no-interaction \
+           --prefer-dist
+
+      - name: Run ECS
+        run: composer ecs
