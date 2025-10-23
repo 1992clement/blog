@@ -3,6 +3,10 @@ services:
     build: ./build
     volumes:
       - ./app:/usr/share/nginx/html
+    environment:
+      - DATABASE_PASSWORD_FILE=/run/secrets/mysql_root_password
+    secrets:
+      - mysql_root_password
 
   nginx:
     image: nginx:latest
@@ -17,8 +21,10 @@ services:
     volumes:
       - ./data:/var/lib/mysql
     environment:
-      - MYSQL_DATABASE=mydb
-      - MYSQL_USER=clem
-      - MYSQL_PASSWORD=oklm
-      - MYSQL_RANDOM_ROOT_PASSWORD=1
-      - MYSQL_ONETIME_PASSWORD=1
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mysql_root_password
+    secrets:
+      - mysql_root_password
+
+secrets:
+  mysql_root_password:
+    file: ./build/secrets/mysql_root_password
