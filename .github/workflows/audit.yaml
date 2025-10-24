@@ -6,6 +6,11 @@ jobs:
     defaults:
       run:
         working-directory: ./app
+    env:
+      APP_ENV: test
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+      DEFAULT_URI: "http://localhost"
     steps:
       - name: Checkout
         uses: actions/checkout@v4

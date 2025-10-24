@@ -33,6 +33,8 @@ when@test:
         dbal:
             # "TEST_TOKEN" is typically set by ParaTest
             dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+            url: '%env(resolve:DATABASE_URL)%'
+            password: '%env(DATABASE_PASSWORD)%'
 
 when@prod:
     doctrine:
