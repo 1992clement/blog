@@ -6,6 +6,11 @@ jobs:
     defaults:
       run:
         working-directory: ./app
+    env:
+      APP_ENV: test
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+      DEFAULT_URI: "http://localhost"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -14,12 +19,12 @@ jobs:
         uses: shivammathur/setup-php@v2
 
       - name: Setup composer cache
-        run: echo "COMPOSER_DIR_CACHE=$(composer config dir-cache)"
+        run: echo "COMPOSER_DIR_CACHE=$(composer config dir-cache)" >> $GITHUB_ENV
 
       - name: Cache composer dependencies
         uses: actions/cache@v4
         with:
-          path: ${{ COMPOSER_DIR_CACHE }}
+          path: ${{ env.COMPOSER_DIR_CACHE }}
           key: php-8.4composer-${{ hashFiles('**/composer.json') }}
           restore-keys: |
             php8.4-composer-latest-
