@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -30,6 +31,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $email = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $registrationDate = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $lastLoginDate = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $presentation = null;
 
     public function getId(): ?int
     {
@@ -110,5 +123,53 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         // @deprecated, to be removed when upgrading to Symfony 8
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getRegistrationDate(): ?\DateTimeImmutable
+    {
+        return $this->registrationDate;
+    }
+
+    public function setRegistrationDate(\DateTimeImmutable $registrationDate): static
+    {
+        $this->registrationDate = $registrationDate;
+
+        return $this;
+    }
+
+    public function getLastLoginDate(): ?\DateTimeImmutable
+    {
+        return $this->lastLoginDate;
+    }
+
+    public function setLastLoginDate(\DateTimeImmutable $lastLoginDate): static
+    {
+        $this->lastLoginDate = $lastLoginDate;
+
+        return $this;
+    }
+
+    public function getPresentation(): ?string
+    {
+        return $this->presentation;
+    }
+
+    public function setPresentation(?string $presentation): static
+    {
+        $this->presentation = $presentation;
+
+        return $this;
     }
 }
