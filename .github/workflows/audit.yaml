@@ -1,5 +1,5 @@
 name: Composer dependencies audit
-on: [push, pull_request]
+on: [push]
 jobs:
   audit:
     runs-on: ubuntu-latest
