@@ -1,3 +1,8 @@
 framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
+
+        # MAILER_DNS=null://null will try to enqueue the message,
+        # creating a doublon, and making the tests fail
+        # keep this config until real config is set
+        message_bus: false

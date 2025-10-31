@@ -11,6 +11,7 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
       DEFAULT_URI: "http://localhost"
+      APP_SECRET: "secret-toto"
     services:
       db:
         image: mysql:latest
