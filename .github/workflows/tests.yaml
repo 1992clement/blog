@@ -11,6 +11,19 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
       DEFAULT_URI: "http://localhost"
+    services:
+      db:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          MYSQL_DATABASE: mydb
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -19,7 +32,7 @@ jobs:
         uses: shivammathur/setup-php@v2
 
       - name: Setup composer cache
-        run: echo "COMPOSER_DIR_CACHE=$(composer config dir-cache)" >> $GITHUB_ENV
+        run: echo "COMPOSER_DIR_CACHE=$(composer config cache-dir)" >> $GITHUB_ENV
 
       - name: Cache composer dependencies
         uses: actions/cache@v4
@@ -41,4 +54,4 @@ jobs:
            --no-interaction
 
       - name: Run tests
-        run: php bin/phpunit tests
+        run: composer app:test
