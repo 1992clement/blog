@@ -16,3 +16,5 @@ parameters:
         - path: tests/bootstrap.php
           identifier: function.alreadyNarrowedType
 
+        - identifier: missingType.generics
+
