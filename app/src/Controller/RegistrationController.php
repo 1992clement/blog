@@ -24,7 +24,7 @@ class RegistrationController extends AbstractController
     ) {
     }
 
-    #[Route('/register', name: 'register')]
+    #[Route('/register', name: 'app_register')]
     public function register(
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
@@ -76,13 +76,13 @@ class RegistrationController extends AbstractController
         $id = $request->query->get('id');
 
         if ($id === null) {
-            return $this->redirectToRoute('register');
+            return $this->redirectToRoute('app_register');
         }
 
         $user = $userRepository->find($id);
 
         if ($user === null) {
-            return $this->redirectToRoute('register');
+            return $this->redirectToRoute('app_register');
         }
 
         // validate email confirmation link, sets User::isVerified=true and persists
@@ -97,6 +97,6 @@ class RegistrationController extends AbstractController
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
         $this->addFlash('success', 'Your email address has been verified.');
 
-        return $this->redirectToRoute('register');
+        return $this->redirectToRoute('app_register');
     }
 }
