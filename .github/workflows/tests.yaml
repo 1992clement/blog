@@ -10,8 +10,8 @@ jobs:
       APP_ENV: test
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-      DEFAULT_URI: "http://localhost"
-      APP_SECRET: "secret-toto"
+      DEFAULT_URI: ${{ secrets.DEFAULT_URI }}
+      APP_SECRET: ${{ secrets.APP_SECRET }}
     services:
       db:
         image: mysql:latest
