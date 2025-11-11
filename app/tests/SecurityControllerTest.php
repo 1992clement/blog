@@ -102,7 +102,9 @@ class SecurityControllerTest extends WebTestCase
 
     public function testLogout(): void
     {
-        $user = static::getContainer()->get(UserRepository::class)->findOneBy(['email' => 'email@example.com']);
+        $user = static::getContainer()->get(UserRepository::class)->findOneBy([
+            'email' => 'email@example.com',
+        ]);
         $this->client->loginUser($user);
         $this->assertTrue($this->isAuthenticated());
 
