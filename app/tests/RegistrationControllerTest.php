@@ -51,6 +51,8 @@ class RegistrationControllerTest extends WebTestCase
         ]);
         // Ensure redirection & user creation
         self::assertResponseRedirects('/');
+        $this->assertTrue($this->isAuthenticated());
+
         $users = $this->userRepository->findAll();
         self::assertCount(1, $users);
 
@@ -64,9 +66,8 @@ class RegistrationControllerTest extends WebTestCase
         self::assertEmailAddressContains($messages[0], 'to', 'me@example.com');
         self::assertEmailTextBodyContains($messages[0], 'This link will expire in 1 hour.');
 
-        // Login the new user
         $this->client->followRedirect();
-        $this->client->loginUser($user);
+        $this->assertTrue($this->isAuthenticated());
 
         // Get the verification link from the email
         /** @var TemplatedEmail $templatedEmail */
@@ -102,5 +103,11 @@ class RegistrationControllerTest extends WebTestCase
             5
         );
         self::assertFalse($user->isVerified());
+    }
+
+    private function isAuthenticated(): bool
+    {
+        $token = static::getContainer()->get('security.token_storage')->getToken();
+        return $token !== null && $token->getUser() instanceof User;
     }
 }
