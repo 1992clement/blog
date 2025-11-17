@@ -213,9 +213,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addArticle(Article $article): static
     {
-        if (!$this->articles->contains($article)) {
+        if (! $this->articles->contains($article)) {
             $this->articles->add($article);
-            $article->setCreatorId($this);
+            $article->setCreator($this);
         }
 
         return $this;
@@ -225,8 +225,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->articles->removeElement($article)) {
             // set the owning side to null (unless already changed)
-            if ($article->getCreatorId() === $this) {
-                $article->setCreatorId(null);
+            if ($article->getCreator() === $this) {
+                $article->setCreator(null);
             }
         }
 

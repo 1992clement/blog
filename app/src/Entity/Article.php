@@ -22,7 +22,7 @@ class Article
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $creatorId = null;
+    private ?User $creator = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $creationDate = null;
@@ -59,14 +59,14 @@ class Article
         return $this;
     }
 
-    public function getCreatorId(): ?User
+    public function getCreator(): ?User
     {
-        return $this->creatorId;
+        return $this->creator;
     }
 
-    public function setCreatorId(?User $creatorId): static
+    public function setCreator(?User $creator): static
     {
-        $this->creatorId = $creatorId;
+        $this->creator = $creator;
 
         return $this;
     }
