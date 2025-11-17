@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\User;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,7 +33,8 @@ final class ArticleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $article->setCreator($this->getUser());
+            $currentUser = $entityManager->getReference(User::class, $this->getUser()->getUserIdentifier());
+            $article->setCreator($currentUser);
             $date = new \DateTimeImmutable();
             $article->setCreationDate($date);
             $article->setModificationDate($date);
