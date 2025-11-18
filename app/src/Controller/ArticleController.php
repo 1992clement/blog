@@ -33,7 +33,9 @@ final class ArticleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $currentUser = $entityManager->getRepository(User::class)->findOneBy(['username' => $this->getUser()->getUserIdentifier()]);
+            $currentUser = $entityManager->getRepository(User::class)->findOneBy([
+                'username' => $this->getUser()->getUserIdentifier(),
+            ]);
             $article->setCreator($currentUser);
             $date = new \DateTimeImmutable();
             $article->setCreationDate($date);
