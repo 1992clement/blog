@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\Article;
+use App\Entity\Comment;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -183,6 +184,38 @@ final class ArticleControllerTest extends WebTestCase
 
         $this->client->request('POST', sprintf('/article/%s/delete', $article->getId()));
         $this->assertResponseRedirects('/login');
+    }
+
+    public function testCommentArticle(): void
+    {
+        /** @var User $admin */
+        $admin = $this->userRepository->findOneBy([
+            'username' => 'admin',
+        ]);
+        $article = $this->createArticle($admin);
+
+        $this->client->loginUser($admin);
+        $this->client->request('GET', sprintf('/article/%s/show', $article->getId()));
+
+        $this->client->submitForm('Add comment', [
+            'comment[text]' => 'New comment',
+        ]);
+
+        $this->assertResponseRedirects(sprintf('/article/%s/show', $article->getId()));
+
+        /** @var Article $articleCommented */
+        $articleCommented = $this->articleRepository->findAll()[0];
+
+        $this->assertCount(1, $articleCommented->getComments());
+        /** @var Comment $comment */
+        $comment = $articleCommented->getComments()[0];
+        $this->assertSame('New comment', $comment->getText());
+        $this->assertSame($admin->getId(), $comment->getAuthor()->getId());
+        $this->assertEqualsWithDelta(
+            time(),
+            $comment->getCreationDate()->getTimestamp(),
+            5
+        );
     }
 
     private function createArticle(User $creator): Article
