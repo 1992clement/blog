@@ -46,5 +46,4 @@ class DatetimeImmutableMicroseconds extends VarDateTimeImmutableType
 
         return $value;
     }
-
 }

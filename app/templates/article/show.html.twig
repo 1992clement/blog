@@ -34,6 +34,23 @@
         </tbody>
     </table>
 
+    {% if article.comments | length > 0 %}
+        {{ article.comments | length }} comments :
+        {% for comment in article.comments %}
+        <p>
+            {{ comment.text }} <br/>
+            <b>{{ comment.author.username }} - {{ comment.creationDate|date }}</b>
+        </p>
+        {% endfor %}
+    {% else %}
+        There is no comment on this article.
+    {% endif %}
+
+    {{ form_start(form, {'action': path('app_article_comment', {'id' : article.id})}) }}
+        {{ form_row(form.text) }}
+    <button type="submit" class="btn btn-primary">Add comment</button>
+    {{ form_end(form) }}
+
     <a href="{{ path('app_article_index') }}">back to list</a>
 
     <a href="{{ path('app_article_edit', {'id': article.id}) }}">edit</a>
