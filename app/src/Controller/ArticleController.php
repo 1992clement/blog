@@ -31,6 +31,17 @@ final class ArticleController extends AbstractController
         ]);
     }
 
+    #[Route('/search', name: 'app_article_search', methods: ['GET'])]
+    public function search(Request $request, ArticleRepository $articleRepository): Response
+    {
+        $query = $request->query->get('q', '');
+
+        return $this->render('article/search.html.twig', [
+            'articles' => $articleRepository->search($query),
+            'query' => $query,
+        ]);
+    }
+
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/new', name: 'app_article_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
