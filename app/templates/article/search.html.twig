@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche d'articles{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Recherche d'articles</h1>
+
+        {# Formulaire de recherche #}
+        <div class="row mb-4">
+            <div class="col-md-8 offset-md-2">
+                <form method="get" action="{{ path('app_article_search') }}" class="mb-4">
+                    <div class="input-group">
+                        <input
+                            type="text"
+                            name="q"
+                            class="form-control"
+                            placeholder="Rechercher dans le titre ou le contenu..."
+                            value="{{ query }}"
+                            autofocus
+                        >
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i> Rechercher
+                        </button>
+                        {% if query %}
+                            <a href="{{ path('app_article_search') }}" class="btn btn-secondary">
+                                <i class="bi bi-x"></i> Effacer
+                            </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {# Résultats de la recherche #}
+        {% if query %}
+            <div class="alert alert-info">
+                <strong>{{ articles|length }}</strong> résultat(s) trouvé(s) pour "<strong>{{ query }}</strong>"
+            </div>
+        {% endif %}
+
+        {# Liste des articles #}
+        {% if articles is empty %}
+            {% if query %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    Aucun article trouvé pour votre recherche.
+                </div>
+            {% else %}
+                <p class="text-muted">Utilisez le formulaire ci-dessus pour rechercher des articles.</p>
+            {% endif %}
+        {% else %}
+            <div class="row">
+                {% for article in articles %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a href="{{ path('app_article_show', {id: article.id}) }}">
+                                        {{ article.title }}
+                                    </a>
+                                </h5>
+
+                                <p class="card-text text-muted small">
+                                    Par {{ article.creator.email }}
+                                    le {{ article.creationDate|date('d/m/Y à H:i') }}
+                                </p>
+
+                                <p class="card-text">
+                                    {{ article.content|slice(0, 150) }}{% if article.content|length > 150 %}...{% endif %}
+                                </p>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="{{ path('app_article_show', {id: article.id}) }}" class="btn btn-sm btn-outline-primary">
+                                        Lire la suite
+                                    </a>
+
+                                    {% if article.comments|length > 0 %}
+                                        <span class="badge bg-secondary">
+                                        <i class="bi bi-chat"></i> {{ article.comments|length }}
+                                        commentaire{{ article.comments|length > 1 ? 's' : '' }}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

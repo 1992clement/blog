@@ -36,7 +36,9 @@ class Article
      * @var Collection<int, Comment>
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article', orphanRemoval: true)]
-    #[ORM\OrderBy(['creationDate' => 'DESC'])]
+    #[ORM\OrderBy([
+        'creationDate' => 'DESC',
+    ])]
     private Collection $comments;
 
     public function __construct()
